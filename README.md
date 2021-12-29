@@ -1,8 +1,8 @@
 ## CPMA
-#CPMA(Congestion Propagation Modeling Algorithm) is a model based on Markov chain.  
+# CPMA(Congestion Propagation Modeling Algorithm) is a model based on Markov chain.  
 It's able to determine the expected propagation times and  probabilities for each road segments involved in the congestion propagation.  
 
-#Ref:  
+# Ref:  
 @article{nguyen2017discovering,  
 title={Discovering congestion propagation patterns in spatio-temporal traffic data},  
 author={Nguyen, Hoang and Liu, Wei and Chen, Fang},  
