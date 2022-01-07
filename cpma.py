@@ -3,6 +3,7 @@
 
 import numpy as np
 import scipy
+import copy
 
 
 class CPMA(object):
@@ -11,10 +12,12 @@ class CPMA(object):
     and expected propagation time for each roads involved in the congestion propagation.
     """
 
-    def __init__(self, Markov_matrix):
+    def __init__(self, Markov_matrix, adj_matrix: np.array):
         self.Markov_matrix = Markov_matrix
+        self.adj_matrix = adj_matrix
 
-    def cal_propagation_prob(self, pp_matrix: np.array):
+    @staticmethod
+    def cal_propagation_prob(pp_matrix: np.array):
         """
 
         :param pp_matrix: Propagation path Markov matrix in which state '0' is eliminated. Cause what we concern is
@@ -57,6 +60,73 @@ class CPMA(object):
         expected_time = numerator_ / prob
 
         return expected_time
+
+    def unfold(self, tree: list):
+        """
+        Unfold a congestion propagation tree to several propagation paths.
+
+        :param tree: list, the 1st element is the root. i.e.[12, 1, 3, 4, 5, 6]
+        :return:
+        """
+        congestion_propagation_paths = []
+        tree_ = copy.deepcopy(tree)
+
+        tree_matrix = np.zeros_like(self.adj_matrix)
+        tree_matrix[:, tree] = 1
+        tree_matrix[tree, :] = 1
+        zeros = np.zeros_like(self.adj_matrix)
+
+        adj_tree = np.where(self.adj_matrix > 0, tree_matrix, zeros)
+
+        # ---------------------- Find Leaves ----------------------
+        leaves = []
+        parents = [tree[0]]
+
+        while len(tree):
+            parents_ = []
+            for parent in parents:
+                tree.remove(parent)
+            for parent in parents:
+                indicator = 0  # To indicate whether a parent has a child, it's a leaf if not.
+                if len(tree):
+                    for child in tree:
+                        if adj_tree[parent][child] == 1:
+                            parents_.append(child)
+                            indicator = 1
+                if indicator == 0:
+                    leaves.append(parent)
+            parents = copy.deepcopy(parents_)
+
+        # ---------------------- Find Paths ----------------------
+
+        def findAllPath(adj_ma, start, end, path=[]):
+            if not path:
+                path.append(start)
+            if start == end:
+                paths.append(path[:])
+                return
+
+            for node in [i for i, x in enumerate(adj_ma[start]) if x == 1]:
+                if node not in path:
+                    path.append(node)
+                    findAllPath(adj_ma, node, end, path)
+                    path.pop()
+            return paths
+
+        # --------------------------------------------------------
+        for leaf in leaves:
+            paths = []
+            paths = findAllPath(adj_tree, start=tree_[0], end=leaf)
+            for path in paths:
+                congestion_propagation_paths.append(path)
+        return congestion_propagation_paths
+
+
+
+
+
+
+
 
 
 
