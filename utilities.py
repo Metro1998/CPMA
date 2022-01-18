@@ -7,6 +7,7 @@ import os
 import numpy as np
 import pandas as pd
 
+
 def preprocess():
     path = './raw_data/'
     segments = list(np.array(pd.read_csv(path + 'segment.csv')).squeeze())
@@ -22,8 +23,7 @@ def preprocess():
                 congestion_matrix[time_indicate][segments.index(sgt)] = 1
         time_indicate += 1
 
-    print(congestion_matrix)
-
+    return congestion_segments
 
 
 if __name__ == '__main__':
