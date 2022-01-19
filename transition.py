@@ -19,7 +19,6 @@ class Transition(object):
         self.num_segs = 0
         self.max_time = 11
         self.day_seq = []
-        self.days_seq = []
         self.init = []
 
     def extract_history(self, path: list, time: int):
@@ -42,7 +41,6 @@ class Transition(object):
                     (path_his, np.expand_dims(self.congestion_matrix[time:time + 12, road_seg], axis=0)), axis=0)
             time += 288
             self.path_his_overall.append(path_his)
-        print(np.array(self.path_his_overall).shape)
         self.num_segs = len(path)
 
     def generate_seq(self):
@@ -50,11 +48,15 @@ class Transition(object):
 
         :return:
         """
+        days_seq = []
+        for j in range(self.num_days):
+            self.day_seq.clear()
+            self.init = [i for i, x in enumerate(self.path_his_overall[j][0]) if x == 1]
+            self.begin_again(j)
+            tem = copy.deepcopy(self.day_seq)
+            days_seq.append(tem)
 
-        for i in range(self.num_days):
-            self.init = [i for i, x in enumerate(self.path_his_overall[i][0]) if x == 1]
-            self.begin_again(i)
-            self.days_seq.append(self.day_seq)
+        return days_seq
 
     def begin_again(self, day_th):
         t = self.init[0]
@@ -99,10 +101,9 @@ class Transition(object):
                     if len(self.init) > 0:
                         self.begin_again(day_th)
 
-    def construct_transition_matrix(self):
-        print(np.array(self.days_seq).shape)
+    def construct_transition_matrix(self, days_seq):
         count_matrix_over_all = np.zeros((self.num_segs, self.num_segs + 1))
-        for day_seq in self.days_seq:
+        for day_seq in days_seq:
             count_matrix = np.zeros((self.num_segs, self.num_segs + 1))
             # Initialization
             idx = 0
@@ -135,7 +136,5 @@ class Transition(object):
         return transition_matrix
 
     def clear(self):
-        self.days_seq.clear()
-        self.day_seq.clear()
         self.path_his_overall.clear()
 

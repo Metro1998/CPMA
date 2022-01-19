@@ -10,9 +10,15 @@ if __name__ == '__main__':
     tran = Transition(congestion_matrix=congestion_matrix_over_all, num_days=5)
     for path in paths:
         tran.extract_history(path, time=228)
-        tran.generate_seq()
-        transition_matrix = tran.construct_transition_matrix()
+        days_seq = tran.generate_seq()
+        transition_matrix = tran.construct_transition_matrix(days_seq)
         tran.clear()
-        print(transition_matrix)
+
+        cmpa = CPMA(transition_matrix)
+        prob = cmpa.cal_propagation_prob()
+        expected_time = cmpa.cal_expected_propagation_time()
+        print(expected_time)
+
+
 
 
