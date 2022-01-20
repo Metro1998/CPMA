@@ -55,6 +55,7 @@ class Transition(object):
             self.begin_again(j)
             tem = copy.deepcopy(self.day_seq)
             days_seq.append(tem)
+            print('day', j, 'path_seq = ', tem, '\n')
 
         return days_seq
 
@@ -133,6 +134,7 @@ class Transition(object):
             transition_matrix[i][i] = count_matrix_over_all[i][i] / division[i]
             transition_matrix[i][i + 1] = count_matrix_over_all[i][i + 1] / division[i]
 
+        print('transition_matrix:\n', transition_matrix, '\n')
         return transition_matrix
 
     def clear(self):
