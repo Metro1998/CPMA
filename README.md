@@ -1,7 +1,7 @@
 # CPMA
 #### _A congestion propagation model based on Markov chain._
 
-### Features\
+### Features
 [x] determine the minimum expected propagation for each road segments involved in the congestion propagation.
 [ ] to be developed
 
