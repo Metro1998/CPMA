@@ -5,7 +5,7 @@
 
 
 - [x] determine the minimum expected propagation for each road segments involved in the congestion propagation.
-- [ ] to be developed
+- [x] if a road segment is in involved in different congestion propagation paths, just get the minimum expected time.  
 
 
 ## Installation
@@ -28,8 +28,8 @@ to do
 ```
 
 ## To Do List
-- [ ] plan a
-- [ ] plan b
+- [ ] different time_particles
+- [ ] some congestion trees can't be resolved.
 
 ## References
 [Discovering congestion propagation patterns in spatio-temporal traffic data](https://ieeexplore.ieee.org/document/7511741)
