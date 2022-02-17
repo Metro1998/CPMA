@@ -21,25 +21,29 @@ class Transition(object):
         self.day_seq = []
         self.init = []
 
-    def extract_history(self, path: list, time: int):
+    def extract_history(self, path: list, time: int, time_particle: int):
         """
         According to the route, extract the state history, for 1 hour for specific.
 
-        :param time: Time(in min) of a day divided by 5(min), i.e. 24 means 2:00
+        :param time_particle:
+        :param time: Time(in min) of a day. i.e. 120 means 2:00 in a.m.
         :param path:
         :return:
         """
         assert len(path) > 1, 'The length of the route must be larger than 1'
-        assert 0 <= time <= 276, 'The time must be confined in [0, 276]'
+        assert 0 <= time <= 1440, 'The time must be confined in [0, 1440]'
+        # review 1 hour ahead in the history(self.num_days)
+        interval = int(60 / time_particle)
+        time = int(time / time_particle)
 
         for i in range(self.num_days):
             path_ = copy.deepcopy(path)
-            path_his = np.expand_dims(self.congestion_matrix[time:time + 12, path_[0]], axis=0)
+            path_his = np.expand_dims(self.congestion_matrix[time:time + interval, path_[0]], axis=0)
             path_.pop(0)
             for road_seg in path_:
                 path_his = np.concatenate(
-                    (path_his, np.expand_dims(self.congestion_matrix[time:time + 12, road_seg], axis=0)), axis=0)
-            time += 288
+                    (path_his, np.expand_dims(self.congestion_matrix[time:time + interval, road_seg], axis=0)), axis=0)
+            time += interval * 24
             self.path_his_overall.append(path_his)
         self.num_segs = len(path)
 

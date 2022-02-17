@@ -9,14 +9,18 @@ import pandas as pd
 import copy
 
 
-def prep_congestion_matrix():
+def prep_congestion_matrix(time_particle):
     """
     Read segment.csv and congestion_segment.csv
     :return: congestion_matrix
     """
     path = './raw_data/'
     segments = list(np.array(pd.read_csv(path + 'segment.csv')).squeeze())
-    congestion_segments = np.array(pd.read_csv(path + 'congestion_segment.csv').fillna(0)).squeeze()
+    if time_particle == 5:
+        congestion_segments = np.array(pd.read_csv(path + 'congestion_segment_5min.csv').fillna(0)).squeeze()
+    elif time_particle == 1:
+        congestion_segments = np.array(pd.read_csv(path + 'congestion_segment_1min.csv').fillna(0)).squeeze()
+
     congestion_matrix = np.zeros((len(congestion_segments), len(segments)))
 
     t = 0
