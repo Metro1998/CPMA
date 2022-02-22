@@ -56,6 +56,8 @@ class Transition(object):
         for j in range(self.num_days):
             self.day_seq.clear()
             self.init = [i for i, x in enumerate(self.path_his_overall[j][0]) if x == 1]
+            if len(self.init) == 0:  # Enforce
+                self.init = [1]
             self.begin_again(j)
             tem = copy.deepcopy(self.day_seq)
             days_seq.append(tem)
@@ -133,6 +135,7 @@ class Transition(object):
 
         transition_matrix = np.zeros((self.num_segs, self.num_segs))
         division = np.sum(count_matrix_over_all, axis=1)
+        division = [1 if i == 0 else i for i in division]  # avoid zero
 
         for i in range(self.num_segs - 1):
             transition_matrix[i][i] = count_matrix_over_all[i][i] / division[i]

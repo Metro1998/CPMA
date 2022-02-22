@@ -56,8 +56,7 @@ class CPMA(object):
             return numerator
         numerator_ = np.array([cal_numerator(r) for r in range(2, num_road_segments + 1, 1)])
         assert numerator_.shape[0] == prob.shape[0], "The numerator and dominator should have the same length."
-        expected_time = numerator_ / prob
-
+        expected_time = [numerator_[i] / prob[i] if numerator_[i] != 0 else 0 for i in range(len(numerator_))]
         return expected_time
 
 

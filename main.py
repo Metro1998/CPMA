@@ -3,6 +3,7 @@ import copy
 from utilities import *
 from cpma import CPMA
 from transition import Transition
+import math
 
 
 def min_exp_propagation_time(trees, time, time_particle):
@@ -20,6 +21,7 @@ def min_exp_propagation_time(trees, time, time_particle):
     trees_ = list(set(sum(trees, [])))
 
     expected_propagation_time = {i: [0] for i in trees_}
+    expected_propagation_time_ = {}
 
     for tree in trees:
         tree_ = copy.deepcopy(tree)
@@ -39,15 +41,20 @@ def min_exp_propagation_time(trees, time, time_particle):
             expected_time = cmpa.cal_expected_propagation_time()
             # print('expected propagation time (*5min):\n', expected_time, '\n')
             for i in range(0, len(expected_time)):
-                expected_propagation_time[path[i + 1]].append(expected_time[i])
+                if not math.isnan(expected_time[i]):
+                    expected_propagation_time[path[i + 1]].append(expected_time[i])
+            print(expected_propagation_time)
 
-    expected_propagation_time = {k: min(filter(lambda x: x > 0, v)) for k, v in expected_propagation_time.items()
-                                 if len(v) > 1}
-    print('minimum expected propagation time to each road segment (*5min):\n', expected_propagation_time)
+    for k, v in expected_propagation_time.items():
+        if len(v) == 1:
+            expected_propagation_time_[k] = 0.
+        else:
+            expected_propagation_time_[k] = min(filter(lambda x: x > 0, v))
+    print('minimum expected propagation time to each road segment (*5min):\n', expected_propagation_time_)
 
 
 if __name__ == '__main__':
-    trees = [[124, 136, 142], [121, 124, 136, 142, 145], [124, 136, 142, 145], [64, 48, 39]]
-    time = 570
+    trees = [[71, 76, 75, 77], [124, 136, 142], [12, 18, 53], [76, 75, 77]]
+    time = 580
     time_particle = 5
     min_exp_propagation_time(trees, time, time_particle)
