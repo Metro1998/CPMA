@@ -46,7 +46,7 @@ def min_exp_propagation_time(trees, time, time_particle):
             print(expected_propagation_time)
 
     for k, v in expected_propagation_time.items():
-        if len(v) == 1:
+        if sum(v) == 0:
             expected_propagation_time_[k] = 0.
         else:
             expected_propagation_time_[k] = min(filter(lambda x: x > 0, v))
@@ -54,7 +54,8 @@ def min_exp_propagation_time(trees, time, time_particle):
 
 
 if __name__ == '__main__':
-    trees = [[71, 76, 75, 77], [124, 136, 142], [12, 18, 53], [76, 75, 77]]
-    time = 580
+    trees = [[102, 105]]
+    print(trees)
+    time = 1090
     time_particle = 5
     min_exp_propagation_time(trees, time, time_particle)
