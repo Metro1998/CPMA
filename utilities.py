@@ -1,7 +1,6 @@
 # @author Metro
 # @date 2022/1/7
-
-
+import csv
 import heapq
 import os
 import numpy as np
@@ -18,9 +17,17 @@ def prep_congestion_matrix(time_particle):
     segments = list(np.array(pd.read_csv(path + 'segment.csv')).squeeze())
     if time_particle == 5:
         congestion_segments = np.array(pd.read_csv(path + 'congestion_segment_5min.csv').fillna(0)).squeeze()
-    elif time_particle == 1:
-        congestion_segments = np.array(pd.read_csv(path + 'congestion_segment_1min.csv').fillna(0)).squeeze()
 
+    elif time_particle == 1:
+        # 这边因为导出来的数据每一天只有1439行（应该只统计了0：00-23：59的数据），所以需要在每天的最后增加一行全零
+        congestion_segments = np.array(pd.read_csv(path + 'congestion_segment_1min.csv').fillna(0)).squeeze()
+        for i in range(4):
+            congestion_segments = \
+                np.insert(congestion_segments, 24 * 60 * (i + 1), np.zeros(congestion_segments.shape[1]), axis=0)
+        congestion_segments = np.concatenate((congestion_segments,
+                                              np.expand_dims(np.zeros(congestion_segments.shape[1]), axis=0)), axis=0)
+    else:
+        print('Invalid time_particle')
     congestion_matrix = np.zeros((len(congestion_segments), len(segments)))
 
     t = 0
@@ -129,6 +136,29 @@ def unfold(tree: list, adj_matrix):
         for path in paths:
             congestion_propagation_paths.append(path)
     return congestion_propagation_paths
+
+
+def write_into_csv(expected_propagation_time, time, time_particle):
+    """
+    Write the result into .csv
+    :param expected_propagation_time:
+    :return:
+    """
+    # translate keys
+    path = './raw_data/'
+    segments = list(np.array(pd.read_csv(path + 'segment.csv')).squeeze())
+    for k, v in copy.deepcopy(expected_propagation_time).items():
+        if not isinstance(k, str):
+            expected_propagation_time[segments[k]] = expected_propagation_time.pop(k)
+
+    # write
+    header = ['RID', 'expected_propagation_time']
+    data = [{'RID': k, 'expected_propagation_time': v} for k, v in expected_propagation_time.items()]
+
+    with open('./result/expected_time_at{}_{}min.csv'.format(time, time_particle), 'a', newline='', encoding='utf-8') as f:
+        writer = csv.DictWriter(f, fieldnames=header)
+        writer.writeheader()
+        writer.writerows(data)
 
 
 if __name__ == '__main__':

@@ -50,12 +50,14 @@ def min_exp_propagation_time(trees, time, time_particle):
             expected_propagation_time_[k] = 0.
         else:
             expected_propagation_time_[k] = min(filter(lambda x: x > 0, v))
-    print('minimum expected propagation time to each road segment (*5min):\n', expected_propagation_time_)
+    print('minimum expected propagation time to each road segment*', time_particle, 'min:\n', expected_propagation_time_)
+
+    write_into_csv(expected_propagation_time_, time, time_particle)
 
 
 if __name__ == '__main__':
-    trees = [[102, 105]]
+    trees = [[67, 70, 73, 95] ]
     print(trees)
-    time = 1090
-    time_particle = 5
+    time = 1065
+    time_particle = 1
     min_exp_propagation_time(trees, time, time_particle)
