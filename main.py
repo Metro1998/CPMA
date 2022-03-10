@@ -28,7 +28,7 @@ def min_exp_propagation_time(trees, time, time_particle):
         paths = unfold(tree_, adj_matrix=adj_matrix)
         print('from tree =', tree, '\n to paths =', paths)
 
-        tran = Transition(congestion_matrix=congestion_matrix_over_all, num_days=5)
+        tran = Transition(congestion_matrix=congestion_matrix_over_all, num_days=5, time_particle=time_particle)
         for path in paths:
             tran.extract_history(path, time, time_particle)
             days_seq = tran.generate_seq()
@@ -52,12 +52,13 @@ def min_exp_propagation_time(trees, time, time_particle):
             expected_propagation_time_[k] = min(filter(lambda x: x > 0, v))
     print('minimum expected propagation time to each road segment*', time_particle, 'min:\n', expected_propagation_time_)
 
-    write_into_csv(expected_propagation_time_, time, time_particle)
+    # write_into_csv(expected_propagation_time_, time, time_particle)
+    prep_visual_data(expected_propagation_time_, time, time_particle)
 
 
 if __name__ == '__main__':
-    trees = [[39, 70, 73, 49, 64, 48], [39, 66, 70, 73, 64, 48], [39, 66, 49, 64, 48, 70]]
+    trees = [[39, 70, 73, 49, 64, 48]]
     print(trees)
     time = 1070
-    time_particle = 1
+    time_particle = 5
     min_exp_propagation_time(trees, time, time_particle)

@@ -154,7 +154,7 @@ def write_into_csv(expected_propagation_time, time, time_particle):
     # write
     if time_particle == 5:
         header = ['RID', 'expected_propagation_time(*5min)']
-        data = [{'RID': k, 'expected_propagation_time(*5min)': v} for k, v in expected_propagation_time.items()]
+        data = [{'RID': k, 'expected_propagation_time(*5min)': 5 * v} for k, v in expected_propagation_time.items()]
         with open('./result/expected_time_at{}_{}min.csv'.format(time, time_particle), 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=header)
             writer.writeheader()
@@ -170,6 +170,29 @@ def write_into_csv(expected_propagation_time, time, time_particle):
 
     else:
         print('Invalid Time_Particle')
+
+def prep_visual_data(expected_propagation_time, time, time_particle):
+
+    path = './raw_data/'
+    segments = pd.read_csv(path + 'segment.csv')
+    rid_list = pd.read_csv(path + 'rid_list.csv')
+    segments = pd.merge(segments, rid_list, how='left')
+
+    id_list = list(expected_propagation_time.keys())
+    sub = segments.iloc[id_list, [0, 4]].copy()
+    sub['id'] = sub.index
+
+    visual_data = []
+    for rid in sub.itertuples():
+        path = rid[2].split(';')
+        link = {'rid': rid[1], 'id': rid[3], 'path': path, 'loc': path[len(path) // 2],
+                'proptime': round(expected_propagation_time[rid[3]] * time_particle, 2),
+                'time': time, 'unit': time_particle}
+        visual_data.append(link)
+
+    visual_data = f'var data = ' + str(visual_data) + ';\n'
+    with open('./result/congestion_prop.js', 'w') as file:
+        file.write(visual_data)
 
 
 

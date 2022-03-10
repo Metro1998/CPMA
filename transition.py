@@ -11,8 +11,9 @@ class Transition(object):
 
     """
 
-    def __init__(self, congestion_matrix, num_days=5):
+    def __init__(self, congestion_matrix, num_days=5, time_particle=1):
         self.congestion_matrix = congestion_matrix
+        self.time_particle = time_particle
         self.path_his_overall = []
         self.num_days = num_days
         self.time_indi = 0
@@ -81,7 +82,7 @@ class Transition(object):
             else:
                 pass
 
-        elif t_th >= 60/5 - 1:
+        elif t_th >= 60/self.time_particle - 1:
             # 当时间步大于11，跳出搜索
             pass
 
