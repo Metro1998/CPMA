@@ -152,13 +152,25 @@ def write_into_csv(expected_propagation_time, time, time_particle):
             expected_propagation_time[segments[k]] = expected_propagation_time.pop(k)
 
     # write
-    header = ['RID', 'expected_propagation_time']
-    data = [{'RID': k, 'expected_propagation_time': v} for k, v in expected_propagation_time.items()]
+    if time_particle == 5:
+        header = ['RID', 'expected_propagation_time(*5min)']
+        data = [{'RID': k, 'expected_propagation_time(*5min)': v} for k, v in expected_propagation_time.items()]
+        with open('./result/expected_time_at{}_{}min.csv'.format(time, time_particle), 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(data)
 
-    with open('./result/expected_time_at{}_{}min.csv'.format(time, time_particle), 'a', newline='', encoding='utf-8') as f:
-        writer = csv.DictWriter(f, fieldnames=header)
-        writer.writeheader()
-        writer.writerows(data)
+    elif time_particle == 1:
+        header = ['RID', 'expected_propagation_time(*1min)']
+        data = [{'RID': k, 'expected_propagation_time(*1min)': v} for k, v in expected_propagation_time.items()]
+        with open('./result/expected_time_at{}_{}min.csv'.format(time, time_particle), 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(data)
+
+    else:
+        print('Invalid Time_Particle')
+
 
 
 if __name__ == '__main__':

@@ -56,8 +56,8 @@ def min_exp_propagation_time(trees, time, time_particle):
 
 
 if __name__ == '__main__':
-    trees = [[67, 70, 73, 95] ]
+    trees = [[39, 70, 73, 49, 64, 48], [39, 66, 70, 73, 64, 48], [39, 66, 49, 64, 48, 70]]
     print(trees)
-    time = 1065
+    time = 1070
     time_particle = 1
     min_exp_propagation_time(trees, time, time_particle)

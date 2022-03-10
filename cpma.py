@@ -50,8 +50,9 @@ class CPMA(object):
             onehot_right = np.transpose(np.eye(r - 1, dtype=int)[-1])
             sub_matrix = self.pp_matrix[:-(num_road_segments-r+1), :-(num_road_segments-r+1)]
             identity = np.identity(r-1)
-            tem = np.linalg.inv(identity - sub_matrix)
-            numerator = onehot_left @ tem @ tem @ onehot_right * self.pp_matrix[r-2][r-1]
+            # 这里用的是伪逆以解决（identity - sub_matrix）没有逆矩阵的问题，且pinv与inv在正常（存在逆矩阵）情况下输出没有区别
+            temp = np.linalg.pinv(identity - sub_matrix)
+            numerator = onehot_left @ temp @ temp @ onehot_right * self.pp_matrix[r-2][r-1]
 
             return numerator
         numerator_ = np.array([cal_numerator(r) for r in range(2, num_road_segments + 1, 1)])
