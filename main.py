@@ -39,7 +39,7 @@ def min_exp_propagation_time(trees, time, time_particle):
             prob = cmpa.cal_propagation_prob()
             # print('propagation probability:\n', prob, '\n')
             expected_time = cmpa.cal_expected_propagation_time()
-            # print('expected propagation time (*5min):\n', expected_time, '\n')
+            # print('expected propagation time (*min):\n', expected_time, '\n')
             for i in range(0, len(expected_time)):
                 if not math.isnan(expected_time[i]):
                     expected_propagation_time[path[i + 1]].append(expected_time[i])
@@ -49,7 +49,8 @@ def min_exp_propagation_time(trees, time, time_particle):
         if sum(v) == 0:
             expected_propagation_time_[k] = 0.
         else:
-            expected_propagation_time_[k] = min(filter(lambda x: x > 0, v))
+            expected_propagation_time_[k] = min(filter(lambda x: x > 0, v)) * 3
+            # 3min 是估计出来的路段内拥堵激波传播时间：依据经验拥堵激波的传播时间为20km/h，同时假定路段平均长度为2km（这里误差很大.23333）
     print('minimum expected propagation time to each road segment*', time_particle, 'min:\n', expected_propagation_time_)
 
     # write_into_csv(expected_propagation_time_, time, time_particle)
@@ -57,8 +58,8 @@ def min_exp_propagation_time(trees, time, time_particle):
 
 
 if __name__ == '__main__':
-    trees = [[39, 70, 73, 49, 64, 48]]
+    trees = [[73, 70, 64, 48]]
     print(trees)
     time = 1070
-    time_particle = 5
+    time_particle = 1
     min_exp_propagation_time(trees, time, time_particle)

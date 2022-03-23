@@ -93,7 +93,9 @@ def unfold(tree: list, adj_matrix):
     zeros = np.zeros_like(adj_matrix)
 
     adj_tree = np.where(tree_matrix > 0, adj_matrix, zeros)
+    leaves = [_ for _ in tree if np.sum(adj_tree, axis=1)[_] == 2]
 
+    """
     # ---------------------- Find Leaves ----------------------
     leaves = []
     parents = [tree[0]]
@@ -112,6 +114,7 @@ def unfold(tree: list, adj_matrix):
             if indicator == 0:
                 leaves.append(parent)
         parents = copy.deepcopy(parents_)
+    """
 
     # ---------------------- Find Paths ----------------------
 
@@ -131,10 +134,13 @@ def unfold(tree: list, adj_matrix):
 
     # --------------------------------------------------------
     for leaf in leaves:
-        paths = []
-        paths = findAllPath(adj_tree, start=tree_[0], end=leaf)
-        for path in paths:
-            congestion_propagation_paths.append(path)
+        for root in leaves:
+            if leaf != root:
+                paths = []
+                paths = findAllPath(adj_tree, start=root, end=leaf)
+                for path in paths:
+                    congestion_propagation_paths.append(path)
+
     return congestion_propagation_paths
 
 
